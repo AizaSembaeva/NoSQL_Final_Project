@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { connectDB } from "./config/db.js";
+import { errorHandler } from "./utils/errorHandler.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import productRoutes from "./routes/product.routes.js";
@@ -34,5 +35,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payments", paymentRoutes);
+
+app.use(errorHandler);
 
 export default app;
