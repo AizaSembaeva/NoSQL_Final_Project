@@ -6,13 +6,16 @@ import {
   getOrdersSummary
 } from "../controllers/order.controller.js";
 
+import { authMiddleware } from "../middleware/auth.middleware.js";
+import { roleMiddleware } from "../middleware/role.middleware.js";
+
 const router = express.Router();
 
-router.post("/", createOrder);
-router.get("/my", getMyOrders);
+router.post("/", authMiddleware, createOrder);
+router.get("/my", authMiddleware, getMyOrders);
 
-router.get("/summary", getOrdersSummary);
+router.get("/summary", authMiddleware, getOrdersSummary);
 
-router.patch("/:id/status", updateOrderStatus);
+router.patch("/:id/status", authMiddleware, roleMiddleware("admin"), updateOrderStatus);
 
 export default router;
