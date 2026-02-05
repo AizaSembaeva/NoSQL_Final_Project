@@ -4,7 +4,6 @@ import { money, renderNav, toast } from '../ui.js';
 
 renderNav();
 if (!requireAdmin()) {
-  // redirected
 }
 
 const $ = (id) => document.getElementById(id);
@@ -76,7 +75,6 @@ async function loadProducts() {
     ? products.map(productRow).join('')
     : `<tr><td colspan="8" class="muted">No products yet</td></tr>`;
 
-  // Save
   document.querySelectorAll('[data-save]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.getAttribute('data-save');
@@ -104,7 +102,6 @@ async function loadProducts() {
     });
   });
 
-  // Delete
   document.querySelectorAll('[data-del]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.getAttribute('data-del');
@@ -119,7 +116,6 @@ async function loadProducts() {
     });
   });
 
-  // Stock patch
   document.querySelectorAll('[data-stock]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.getAttribute('data-stock');
@@ -134,7 +130,6 @@ async function loadProducts() {
   });
 }
 
-// Create category
 $('createCategoryForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const name = $('newCatName').value.trim();
@@ -144,14 +139,13 @@ $('createCategoryForm').addEventListener('submit', async (e) => {
     await CatalogAPI.createCategory({ name, description });
     $('newCatName').value = '';
     $('newCatDesc').value = '';
-    toast('Category created ✅', 'ok');
+    toast('Category created', 'ok');
     await loadCategories();
   } catch (err) {
     toast(err.message, 'danger');
   }
 });
 
-// Create product
 $('createProductForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const payload = {
@@ -177,7 +171,6 @@ $('createProductForm').addEventListener('submit', async (e) => {
   }
 });
 
-// Update order status
 $('orderStatusForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const id = $('orderId').value.trim();
@@ -190,6 +183,89 @@ $('orderStatusForm').addEventListener('submit', async (e) => {
     toast(err.message, 'danger');
   }
 });
+
+
+let foundOrders = [];
+
+function renderOrdersSearch() {
+  const panel = document.getElementById('ordersPanel');
+  const sel = document.getElementById('orderSelect');
+  const list = document.getElementById('ordersList');
+  const idSpan = document.getElementById('selectedOrderId');
+
+  if (!panel || !sel || !list || !idSpan) return;
+
+  if (!Array.isArray(foundOrders) || foundOrders.length === 0) {
+    panel.style.display = "none";
+    sel.innerHTML = "";
+    list.innerHTML = "";
+    idSpan.textContent = "—";
+    return;
+  }
+
+  panel.style.display = "block";
+
+  sel.innerHTML = foundOrders.map((o) => {
+    const d = new Date(o.orderDate);
+    const label = `${d.toLocaleString()} — ${money(o.totalPrice)} — ${o.status}`;
+    return `<option value="${o._id}">${label}</option>`;
+  }).join("");
+
+  idSpan.textContent = sel.value || "—";
+
+  list.innerHTML = foundOrders.map((o) => {
+    const d = new Date(o.orderDate);
+    return `<div class="row" style="gap:10px;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.06)">
+      <div><b>${d.toLocaleString()}</b> <span class="muted">(${o.status})</span></div>
+      <div>${money(o.totalPrice)}</div>
+    </div>`;
+  }).join("");
+
+  const orderIdInput = document.getElementById('orderId');
+  if (orderIdInput) orderIdInput.value = sel.value || "";
+}
+
+const orderSearchForm = document.getElementById('orderSearchForm');
+if (orderSearchForm) {
+  orderSearchForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const emailEl = document.getElementById('ordersEmail');
+    const dateEl = document.getElementById('ordersDate');
+    const email = (emailEl ? emailEl.value : '').trim().toLowerCase();
+    const date = (dateEl ? dateEl.value : '').trim();
+
+    if (!email) return toast('Email required', 'danger');
+
+    try {
+      const orders = await OrdersAPI.adminGetByEmail(email, date);
+      foundOrders = Array.isArray(orders) ? orders : [];
+
+      if (foundOrders.length === 0) {
+        renderOrdersSearch();
+        return toast('No orders found for this email (and date filter)', 'danger');
+      }
+
+      renderOrdersSearch();
+      toast(`Found ${foundOrders.length} order(s)`, 'ok');
+    } catch (err) {
+      foundOrders = [];
+      renderOrdersSearch();
+      toast(err.message, 'danger');
+    }
+  });
+}
+
+const orderSelect = document.getElementById('orderSelect');
+if (orderSelect) {
+  orderSelect.addEventListener('change', () => {
+    const idSpan = document.getElementById('selectedOrderId');
+    if (idSpan) idSpan.textContent = orderSelect.value || "—";
+    const orderIdInput = document.getElementById('orderId');
+    if (orderIdInput) orderIdInput.value = orderSelect.value || "";
+  });
+}
+
 
 (async function init() {
   try {

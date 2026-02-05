@@ -4,7 +4,6 @@ import { money, renderNav, toast } from '../ui.js';
 
 renderNav();
 if (!requireAuth()) {
-  // redirected
 }
 
 const $ = (id) => document.getElementById(id);
@@ -57,7 +56,6 @@ async function load(){
       OrdersAPI.getMyOrders(),
     ]);
 
-    // orders.html uses #summary and #orders
     $('summary').innerHTML = `
       <div class="row" style="gap:10px;flex-wrap:wrap">
         <div class="card" style="padding:10px 12px;min-width:180px">
@@ -70,9 +68,7 @@ async function load(){
         </div>
       </div>
     `;
-
-    // The old UI used to render raw JSON into #summaryJson.
-    // If that block is removed from orders.html, we must not assume it exists.
+    
     const debugEl = document.getElementById('summaryJson');
     if (debugEl) debugEl.textContent = JSON.stringify(summary, null, 2);
 
@@ -87,7 +83,7 @@ async function load(){
         const method = prompt('Payment method (card/cash/...)', 'card') || 'card';
         try {
           await PaymentsAPI.createPayment(id, method);
-          toast('Paid ✅', 'ok');
+          toast('Paid', 'ok');
           load();
         } catch (err) {
           toast(err.message, 'danger');

@@ -3,7 +3,8 @@ import {
   createOrder,
   getMyOrders,
   updateOrderStatus,
-  getOrdersSummary
+  getOrdersSummary,
+  adminGetOrdersByEmail
 } from "../controllers/order.controller.js";
 
 import { authMiddleware } from "../middleware/auth.middleware.js";
@@ -13,9 +14,9 @@ const router = express.Router();
 
 router.post("/", authMiddleware, createOrder);
 router.get("/my", authMiddleware, getMyOrders);
-
 router.get("/summary", authMiddleware, getOrdersSummary);
 
+router.get("/admin/by-email", authMiddleware, roleMiddleware("admin"), adminGetOrdersByEmail);
 router.patch("/:id/status", authMiddleware, roleMiddleware("admin"), updateOrderStatus);
 
 export default router;

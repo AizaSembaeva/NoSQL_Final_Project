@@ -1,11 +1,23 @@
 import mongoose from "mongoose";
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
+import User from "../models/User.js";
+
+const ALLOWED_STATUSES = new Set(["pending", "paid", "cancelled"]);
+
+function dayRange(dateLike) {
+  const d = new Date(dateLike);
+  if (Number.isNaN(d.getTime())) return null;
+
+  const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+  const end = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 0, 0, 0, 0);
+  return { start, end };
+}
 
 export async function createOrder(req, res, next) {
   try {
     const userId = req.user.id;
-    const { items } = req.body; 
+    const { items } = req.body;
 
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ message: "items required" });
@@ -24,6 +36,10 @@ export async function createOrder(req, res, next) {
       if (!p) return res.status(404).json({ message: `Product not found: ${i.productId}` });
 
       const qty = Number(i.quantity || 1);
+      if (!Number.isFinite(qty) || qty <= 0) {
+        return res.status(400).json({ message: "quantity must be a positive number" });
+      }
+
       if (p.stock < qty) {
         return res.status(400).json({ message: `Not enough stock for ${p.name}` });
       }
@@ -47,10 +63,23 @@ export async function createOrder(req, res, next) {
     });
 
     for (const it of orderItems) {
-      await Product.updateOne(
-        { _id: it.productId },
-        { $inc: { stock: -it.quantity } }
+      const updated = await Product.findByIdAndUpdate(
+        it.productId,
+        { $inc: { stock: -it.quantity } },
+        { new: true }
       );
+
+      if (updated) {
+        const fixedStock = Math.max(Number(updated.stock ?? 0), 0);
+        const shouldBeAvailable = fixedStock > 0;
+
+        if (fixedStock !== updated.stock || updated.isAvailable !== shouldBeAvailable) {
+          await Product.updateOne(
+            { _id: updated._id },
+            { $set: { stock: fixedStock, isAvailable: shouldBeAvailable } }
+          );
+        }
+      }
     }
 
     res.status(201).json(order);
@@ -72,6 +101,11 @@ export async function getMyOrders(req, res, next) {
 export async function updateOrderStatus(req, res, next) {
   try {
     const { status } = req.body;
+
+    if (!ALLOWED_STATUSES.has(String(status))) {
+      return res.status(400).json({ message: "Invalid status. Allowed: pending, paid, cancelled" });
+    }
+
     const updated = await Order.findByIdAndUpdate(
       req.params.id,
       { $set: { status } },
@@ -79,6 +113,31 @@ export async function updateOrderStatus(req, res, next) {
     );
     if (!updated) return res.status(404).json({ message: "Order not found" });
     res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminGetOrdersByEmail(req, res, next) {
+  try {
+    const email = String(req.query.email || "").trim().toLowerCase();
+    const date = String(req.query.date || "").trim();
+
+    if (!email) return res.status(400).json({ message: "email query param required" });
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const filter = { user_id: user._id };
+
+    if (date) {
+      const range = dayRange(date);
+      if (!range) return res.status(400).json({ message: "Invalid date format" });
+      filter.orderDate = { $gte: range.start, $lt: range.end };
+    }
+
+    const orders = await Order.find(filter).sort({ orderDate: -1, createdAt: -1 });
+    res.json(orders);
   } catch (err) {
     next(err);
   }

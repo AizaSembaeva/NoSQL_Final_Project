@@ -16,7 +16,7 @@
 
   <main class="container">
     <h1 style="margin:8px 0 6px 0">Admin panel</h1>
-    <p class="muted">Manage categories & products. Also update order status by ID (backend doesn't provide "list all orders").</p>
+    <p class="muted">Manage categories & products. Also update order status by ID.</p>
 
     <div class="row">
       <section class="card" style="flex:1 1 340px">
@@ -73,6 +73,43 @@
     </section>
 
     <section class="card" style="margin-top:12px">
+      <h2 style="margin-top:0">Search orders by email</h2>
+      <p class="muted small" style="margin-top:-6px">
+        Enter a user's email to see their orders. You can optionally filter by date, then select an order and its ID will be placed into the update form below.
+      </p>
+
+      <form id="orderSearchForm" class="row" style="align-items:flex-end;gap:12px">
+        <div class="field" style="flex:2">
+          <label>User email</label>
+          <input id="ordersEmail" type="email" placeholder="user@example.com" required />
+        </div>
+        <div class="field" style="flex:1">
+          <label>Filter by date (optional)</label>
+          <input id="ordersDate" type="date" />
+        </div>
+        <div class="field" style="align-self:flex-end">
+          <button class="btn primary" type="submit">Search</button>
+        </div>
+      </form>
+
+      <div class="hr"></div>
+
+      <div id="ordersPanel" style="display:none">
+        <div class="row" style="gap:12px;align-items:flex-end">
+          <div class="field" style="flex:2">
+            <label>Select order</label>
+            <select id="orderSelect"></select>
+            <div class="muted small" style="margin-top:6px">Selected order ID: <span id="selectedOrderId">—</span></div>
+          </div>
+        </div>
+
+        <div class="muted small" style="margin-top:10px">Found orders:</div>
+        <div id="ordersList" class="small" style="margin-top:6px"></div>
+      </div>
+    </section>
+
+
+    <section class="card" style="margin-top:12px">
       <h2 style="margin-top:0">Update order status (by ID)</h2>
       <form id="orderStatusForm" class="row">
         <div class="field" style="flex:2">
@@ -84,8 +121,6 @@
           <select id="orderStatus">
             <option value="pending">pending</option>
             <option value="paid">paid</option>
-            <option value="shipped">shipped</option>
-            <option value="delivered">delivered</option>
             <option value="cancelled">cancelled</option>
           </select>
         </div>
