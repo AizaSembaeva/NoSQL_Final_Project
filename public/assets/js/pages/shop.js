@@ -112,7 +112,6 @@ async function loadProducts() {
 
 const triggerLoad = debounce(() => loadProducts(), 300);
 
-// Wire events (these IDs are from index.html)
 ['search', 'categorySel', 'minPrice', 'maxPrice', 'sortSel', 'orderSel', 'onlyAvailable'].forEach(id => {
   const el = $(id);
   if (!el) return;

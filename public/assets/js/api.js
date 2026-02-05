@@ -23,7 +23,6 @@ export async function api(path, { method="GET", body, auth=false } = {}){
   else data = await res.text();
 
   if (!res.ok) {
-    // Try to extract a useful message from different backend shapes
     let msg = `HTTP ${res.status}`;
     if (data) {
       if (typeof data === 'string' && data.trim()) msg = data;
@@ -59,7 +58,13 @@ export const OrdersAPI = {
   createOrder: (items) => api('/api/orders', { method:'POST', body:{ items }, auth:true }),
   getMyOrders: () => api('/api/orders/my', { auth:true }),
   getSummary: () => api('/api/orders/summary', { auth:true }),
-  updateStatus: (id, status) => api(`/api/orders/${id}/status`, { method:'PATCH', body:{ status }, auth:true })
+  updateStatus: (id, status) => api(`/api/orders/${id}/status`, { method:'PATCH', body:{ status }, auth:true }),
+  adminGetByEmail: (email, date='') => {
+    const q = new URLSearchParams();
+    q.set('email', email);
+    if (date) q.set('date', date);
+    return api(`/api/orders/admin/by-email?${q.toString()}`, { auth:true });
+  }
 };
 
 export const PaymentsAPI = {

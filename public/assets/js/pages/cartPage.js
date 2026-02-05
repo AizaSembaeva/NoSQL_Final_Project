@@ -73,7 +73,6 @@ $('clearBtn')?.addEventListener('click', () => {
 });
 
 $('checkoutBtn')?.addEventListener('click', async () => {
-  // Checkout requires authentication
   if (!requireAuth()) return;
 
   const cart = getCart();
