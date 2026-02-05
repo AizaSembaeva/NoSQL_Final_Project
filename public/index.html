@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shop</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/index.html">Clothing Store (NoSQL)</a>
+      <nav class="nav-links" id="navLinks"></nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h2 style="margin:0 0 6px 0">Products</h2>
+
+      <div class="hr"></div>
+
+      <div class="row" style="flex-wrap:wrap;align-items:flex-end">
+        <div class="field" style="min-width:220px">
+          <label>Search</label>
+          <input id="search" placeholder="e.g. T-Shirt" />
+        </div>
+
+        <div class="field" style="min-width:200px">
+          <label>Category</label>
+          <select id="categorySel">
+            <option value="">All categories</option>
+          </select>
+        </div>
+
+        <div class="field" style="min-width:140px">
+          <label>Min price</label>
+          <input id="minPrice" type="number" min="0" step="1" />
+        </div>
+
+        <div class="field" style="min-width:140px">
+          <label>Max price</label>
+          <input id="maxPrice" type="number" min="0" step="1" />
+        </div>
+
+        <div class="field" style="min-width:180px">
+          <label>Sort</label>
+          <select id="sortSel">
+            <option value="createdAt">Newest</option>
+            <option value="price">Price</option>
+            <option value="name">Name</option>
+            <option value="stock">Stock</option>
+          </select>
+        </div>
+
+        <div class="field" style="min-width:120px">
+          <label>Order</label>
+          <select id="orderSel">
+            <option value="desc">desc</option>
+            <option value="asc">asc</option>
+          </select>
+        </div>
+
+        <div class="field" style="min-width:170px">
+          <label style="display:flex;gap:10px;align-items:center">
+            <input id="onlyAvailable" type="checkbox" />
+            Only available
+          </label>
+        </div>
+
+        <div class="field" style="min-width:140px">
+          <button class="btn" id="resetBtn" type="button">Reset</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="row" style="align-items:center;justify-content:space-between">
+        <div class="muted" id="resultsMeta">—</div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div id="products" class="grid"></div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script type="module" src="/assets/js/pages/shop.js"></script>
+</body>
+</html>

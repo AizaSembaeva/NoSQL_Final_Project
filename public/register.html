@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/index.html">Clothing Store (NoSQL)</a>
+      <nav class="nav-links" id="navLinks"></nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Register</h1>
+    <div class="card">
+      <form id="registerForm">
+        <div class="row">
+          <div class="field">
+            <label>Full name</label>
+            <input id="fullname" placeholder="Your name" />
+          </div>
+          <div class="field">
+            <label>Email *</label>
+            <input id="email" type="email" placeholder="you@mail.com" required />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>Password *</label>
+            <input id="password" type="password" required />
+          </div>
+          <div class="field">
+            <label>Phone *</label>
+            <input id="phone" placeholder="+7..." required />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>City</label>
+            <input id="city" placeholder="Astana" />
+          </div>
+          <div class="field">
+            <label>Street</label>
+            <input id="street" placeholder="Street" />
+          </div>
+          <div class="field">
+            <label>House</label>
+            <input id="house" placeholder="12" />
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
+          <button class="btn primary" type="submit">Create account</button>
+          <a class="pill" href="/login.html">Already have an account?</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="/assets/js/pages/register.js"></script>
+</body>
+</html>
