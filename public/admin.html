@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/index.html">Clothing Store (NoSQL)</a>
+      <nav class="nav-links" id="navLinks"></nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 style="margin:8px 0 6px 0">Admin panel</h1>
+    <p class="muted">Manage categories & products. Also update order status by ID (backend doesn't provide "list all orders").</p>
+
+    <div class="row">
+      <section class="card" style="flex:1 1 340px">
+        <h2 style="margin-top:0">Create category</h2>
+        <form id="createCategoryForm">
+          <div class="field"><label>Name</label><input id="newCatName" required /></div>
+          <div class="field"><label>Description</label><textarea id="newCatDesc" rows="2"></textarea></div>
+          <button class="btn ok" type="submit">Create category</button>
+        </form>
+        <div class="hr"></div>
+        <div class="muted small">Existing categories:</div>
+        <div id="catList" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px"></div>
+      </section>
+
+      <section class="card" style="flex:2 1 520px">
+        <h2 style="margin-top:0">Create product</h2>
+        <form id="createProductForm">
+          <div class="field"><label>Name</label><input id="pName" required /></div>
+
+          <div class="row">
+            <div class="field"><label>Price</label><input id="pPrice" type="number" min="0" step="0.01" required /></div>
+            <div class="field"><label>Stock</label><input id="pStock" type="number" min="0" step="1" value="0" required /></div>
+            <div class="field"><label>Category</label><select id="pCategory"></select></div>
+          </div>
+
+          <div class="row">
+            <div class="field"><label>Color</label><input id="pColor" placeholder="black" /></div>
+            <div class="field"><label>Sizes (comma)</label><input id="pSizes" placeholder="S,M,L" /></div>
+          </div>
+
+          <div class="field">
+            <label style="display:flex;gap:10px;align-items:center" class="muted">
+              <input id="pAvail" type="checkbox" checked /> Available
+            </label>
+          </div>
+
+          <button class="btn ok" type="submit">Create product</button>
+        </form>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:12px">
+      <h2 style="margin-top:0">Products (edit / delete / stock)</h2>
+      <div class="muted small">Tip: edit fields inline → Save.</div>
+      <div class="hr"></div>
+      <table class="table small">
+        <thead>
+          <tr>
+            <th>Name</th><th>Price</th><th>Category</th><th>Color</th><th>Sizes</th><th>Stock</th><th>Available</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productsBody"></tbody>
+      </table>
+    </section>
+
+    <section class="card" style="margin-top:12px">
+      <h2 style="margin-top:0">Update order status (by ID)</h2>
+      <form id="orderStatusForm" class="row">
+        <div class="field" style="flex:2">
+          <label>Order ID</label>
+          <input id="orderId" placeholder="Mongo ObjectId" required />
+        </div>
+        <div class="field" style="flex:1">
+          <label>Status</label>
+          <select id="orderStatus">
+            <option value="pending">pending</option>
+            <option value="paid">paid</option>
+            <option value="shipped">shipped</option>
+            <option value="delivered">delivered</option>
+            <option value="cancelled">cancelled</option>
+          </select>
+        </div>
+        <div class="field" style="align-self:flex-end">
+          <button class="btn primary" type="submit">Update</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script type="module" src="/assets/js/pages/admin.js"></script>
+</body>
+</html>

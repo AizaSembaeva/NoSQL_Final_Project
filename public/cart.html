@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cart</title>
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/index.html">Clothing Store (NoSQL)</a>
+      <nav class="nav-links" id="navLinks"></nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h2 style="margin:0">Cart</h2>
+      <p class="muted">Checkout creates an Order. Then you can pay for it in <b>My Orders</b>.</p>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="row" style="align-items:center;justify-content:space-between">
+        <div class="muted" id="totals">—</div>
+        <div style="display:flex;gap:10px">
+          <button id="clearBtn" class="btn danger">Clear cart</button>
+          <button id="checkoutBtn" class="btn primary">Checkout (create order)</button>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <table class="table small">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th style="width:120px">Qty</th>
+            <th>Sum</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="cartBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script type="module" src="/assets/js/pages/cartPage.js"></script>
+</body>
+</html>
