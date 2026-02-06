@@ -27,4 +27,7 @@ const orderSchema = new mongoose.Schema({
   status: { type: String, default: "pending" }
 }, { timestamps: true });
 
+orderSchema.index({ user_id: 1, createdAt: -1 });
+orderSchema.index({ createdAt: -1 });
+
 export default mongoose.model("Order", orderSchema);

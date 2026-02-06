@@ -10,4 +10,6 @@ const paymentSchema = new mongoose.Schema({
   paid_at: Date,
 }, { timestamps: true });
 
+paymentSchema.index({ order_id: 1 });
+
 export default mongoose.model("Payment", paymentSchema);
