@@ -13,4 +13,7 @@ const productSchema = new mongoose.Schema({
   isAvailable: Boolean, 
 }, { timestamps: true });
 
+productSchema.index({ category_id: 1, isAvailable: 1, price: 1 });
+productSchema.index({ createdAt: -1 });
+
 export default mongoose.model("Product", productSchema);
